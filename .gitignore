@@ -3,10 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Secrets
+config.py
+hue
+
 # Custom
 logs*
-hue_*
 urls*
-.env
-venv*
-env/
+thonny/

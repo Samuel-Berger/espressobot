@@ -5,20 +5,24 @@
 """
 TODO: Data collection, automatic or semiautomatic calibration
 """
-import network
+# Files
 import config
-# import os
-import urequests
-import time
 from hue import Hue
 from time import sleep
-from picozero import pico_led
+
+# Libraries
+import network
+import urequests
+from time import sleep
+from machine import Pin
 
 # Dict representing brewer state
 STATE = {"brewing": False, "turnedOff": True, "coffeeDone": False}
 MEASURE_INTERVAL = 5 #seconds
 
 WIFI = network.WLAN(network.STA_IF)
+
+pico_led = Pin('LED', Pin.OUT)
 
 def main() -> None:
     connect()
@@ -93,11 +97,11 @@ def connect():
     while (not WIFI.isconnected() and timeout < 5):
         print('Waiting for WiFi connection...')
         timeout = timeout + 1
-        sleep(1)
+        sleep(5)
     if(not WIFI.isconnected()):
         print('Unable to connect')
         machine.reset()
-    print('Connected')
+    print('Connected to WiFi.')
     pico_led.on()
 
 def resetState() -> None:
