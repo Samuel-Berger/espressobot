@@ -8,9 +8,11 @@ TODO: Data collection, automatic or semiautomatic calibration
 # Files
 import config
 from hue import Hue
+#from slack import Slack
 from time import sleep
 
 # Libraries
+import os
 import network
 import urequests
 from time import sleep
@@ -25,7 +27,7 @@ WIFI = network.WLAN(network.STA_IF)
 pico_led = Pin('LED', Pin.OUT)
 
 def main() -> None:
-    connect()
+    connectToWifi()
     sensor_url = config.SENSOR_URL
     hue = setupHue()
 
@@ -33,7 +35,7 @@ def main() -> None:
         power = measure(sensor_url)
         if(power == -1.0):
             # Power is still changing or an exception occured, wait and measure again
-            time.sleep(MEASURE_INTERVAL/2)
+            sleep(MEASURE_INTERVAL/2)
             continue
 
         # Heating old coffee
@@ -60,7 +62,7 @@ def main() -> None:
         elif(power == 0.0 and STATE["turnedOff"]):
             continue
 
-        time.sleep(MEASURE_INTERVAL)
+        sleep(MEASURE_INTERVAL)
 
 
 def measure(sensor_url) -> float:
@@ -74,7 +76,7 @@ def measure(sensor_url) -> float:
     if(value1 > 2000.0):
         tolerance = 80
     print(value1,"Watt")
-    time.sleep(MEASURE_INTERVAL)
+    sleep(MEASURE_INTERVAL)
     try:
         response = urequests.get(sensor_url)
     except Exception as e:
@@ -89,7 +91,7 @@ def measure(sensor_url) -> float:
     else: return -1.0
 
 
-def connect():
+def connectToWifi():
     #Connect to WLAN
     WIFI.active(True)
     WIFI.connect(config.WIFI_SSID, config.WIFI_PASSWORD)

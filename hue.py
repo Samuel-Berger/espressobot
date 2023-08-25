@@ -8,14 +8,15 @@ class Hue:
         try:
             self.useHue = config.USE_HUE
             self.bridgeIp = config.HUE_IP
+            #self.username = config.HUE_USERNAME
             self.url = f"http://{self.bridgeIp}/api"
         except KeyError:
             print("Could not parse USE_HUE or HUE_IP in the file .env")
             quit()
             
         self.lights = []
-        self.username = ""
         self.loadUsername()
+        self.username = config.HUE_USERNAME
         if(self.username == ""):
             print("Waiting for Hue authorization...")
             self.authorize()
@@ -64,6 +65,7 @@ class Hue:
             return
 
     def getLights(self):
+        print('Getting Hue lights...')
         self.lights = []
         if(self.username == ""):
             return
@@ -76,6 +78,7 @@ class Hue:
             print(e)
             return
         for light in hueResponse.json():
+            print('Adding light {}' .format(light))
             self.lights.append(light)
         return
     
